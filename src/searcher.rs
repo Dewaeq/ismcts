@@ -1,6 +1,11 @@
-use std::{fmt::Debug, time::Instant};
+use std::time::Instant;
 
 use super::{state::State, tree::Tree};
+
+pub struct SearchResult<T: State> {
+    pub best_action: Option<T::Action>,
+    pub scored_actions: Vec<(f32, T::Action)>,
+}
 
 pub struct Searcher<T: State + Clone> {
     tree: Tree<T>,
@@ -13,10 +18,7 @@ impl<T: State + Clone> Searcher<T> {
         }
     }
 
-    pub fn search(&mut self, state: &T, time: u128) -> T::Action
-    where
-        T::Action: Debug,
-    {
+    pub fn search(&mut self, state: &T, time: u128) -> SearchResult<T> {
         self.tree.reset();
         let root_id = self.tree.add_node(None, None);
 
@@ -38,7 +40,10 @@ impl<T: State + Clone> Searcher<T> {
             i += 1;
         }
 
-        self.tree.best_action(root_id, state).unwrap()
+        SearchResult {
+            best_action: self.tree.best_action(root_id, state),
+            scored_actions: self.tree.scored_actions(root_id, state),
+        }
     }
 
     fn backpropagate(&mut self, state: &T, node_id: usize) {

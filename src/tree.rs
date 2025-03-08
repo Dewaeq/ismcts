@@ -118,7 +118,7 @@ where
         self.get_edge(*child_id).map(|e| e.action())
     }
 
-    pub fn score_actions(&self, node_id: usize, state: &T) -> Vec<(f32, T::Action)> {
+    pub fn scored_actions(&self, node_id: usize, state: &T) -> Vec<(f32, T::Action)> {
         let mut results = vec![];
         let legal_actions = state.possible_actions();
 
