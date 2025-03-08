@@ -118,6 +118,22 @@ where
         self.get_edge(*child_id).map(|e| e.action())
     }
 
+    pub fn score_actions(&self, node_id: usize, state: &T) -> Vec<(f32, T::Action)> {
+        let mut results = vec![];
+        let legal_actions = state.possible_actions();
+
+        for &child_id in self.nodes[node_id].child_ids_ref() {
+            if let Some(edge) = self.get_edge(child_id) {
+                let action = edge.action();
+                if legal_actions.has(&action) {
+                    results.push((self.nodes[child_id].uct_score(self.c), action))
+                }
+            }
+        }
+
+        results
+    }
+
     pub fn update_node(&mut self, node_id: usize, reward: f32) {
         self.nodes[node_id].update(reward);
     }
