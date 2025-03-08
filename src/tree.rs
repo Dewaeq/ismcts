@@ -126,7 +126,7 @@ where
             if let Some(edge) = self.get_edge(child_id) {
                 let action = edge.action();
                 if legal_actions.has(&action) {
-                    results.push((self.nodes[child_id].uct_score(self.c), action))
+                    results.push((self.nodes[child_id].avg_score(), action))
                 }
             }
         }
