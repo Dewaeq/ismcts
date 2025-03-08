@@ -7,8 +7,10 @@ pub struct Searcher<T: State + Clone> {
 }
 
 impl<T: State + Clone> Searcher<T> {
-    pub fn new() -> Self {
-        Searcher { tree: Tree::new() }
+    pub fn new(c: f32, default_capacity: usize) -> Self {
+        Searcher {
+            tree: Tree::new(c, default_capacity),
+        }
     }
 
     pub fn search(&mut self, state: &T, time: u128) -> T::Action
@@ -53,6 +55,8 @@ impl<T: State + Clone> Searcher<T> {
 
 impl<T: State + Clone> Default for Searcher<T> {
     fn default() -> Self {
-        Self::new()
+        Self {
+            tree: Tree::new(2f32.sqrt(), 500_000),
+        }
     }
 }

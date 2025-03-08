@@ -1,26 +1,28 @@
 use super::{action_list::ActionList, edge::Edge, node::Node, state::State};
 
-const TREE_SIZE: usize = 500_000;
-
 pub struct Tree<T: State> {
     nodes: Vec<Node<T>>,
     index: usize,
+    c: f32,
+    default_capacity: usize,
 }
 
 impl<T> Tree<T>
 where
     T: State + Clone,
 {
-    pub fn new() -> Self {
+    pub fn new(c: f32, default_capacity: usize) -> Self {
         Tree {
-            nodes: Vec::with_capacity(TREE_SIZE),
+            nodes: Vec::with_capacity(default_capacity),
             index: 0,
+            c,
+            default_capacity,
         }
     }
 
     pub fn reset(&mut self) {
         self.index = 0;
-        self.nodes = Vec::with_capacity(TREE_SIZE);
+        self.nodes = Vec::with_capacity(self.default_capacity);
     }
 
     pub fn add_node(
@@ -73,7 +75,7 @@ where
         for &child_id in parent.child_ids_ref().iter() {
             let action = right[child_id - split_pos].edge().unwrap().action();
             if legal_actions.has(&action) {
-                let uct_score = right[child_id - split_pos].uct_score();
+                let uct_score = right[child_id - split_pos].uct_score(self.c);
                 if uct_score > best_score {
                     best_score = uct_score;
                     best_child = Some(child_id);

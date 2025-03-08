@@ -73,8 +73,8 @@ where
         self.num_sims
     }
 
-    pub fn uct_score(&self) -> f32 {
+    pub fn uct_score(&self, c: f32) -> f32 {
         let n = self.num_sims as f32;
-        self.score / n + 4.5 * (2. * (self.avails as f32).ln() / n).sqrt()
+        self.score / n + c * ((self.avails as f32).ln() / n).sqrt()
     }
 }
