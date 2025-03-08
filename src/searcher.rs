@@ -1,10 +1,14 @@
-use std::time::Instant;
+use std::time::{Duration, Instant};
+
+use crate::node::NodeStats;
 
 use super::{state::State, tree::Tree};
 
 pub struct SearchResult<T: State> {
+    pub num_simulations: usize,
+    pub duration: Duration,
     pub best_action: Option<T::Action>,
-    pub scored_actions: Vec<(f32, T::Action)>,
+    pub child_stats: Vec<(NodeStats, T::Action)>,
 }
 
 pub struct Searcher<T: State + Clone> {
@@ -41,8 +45,10 @@ impl<T: State + Clone> Searcher<T> {
         }
 
         SearchResult {
+            num_simulations: i,
+            duration: started.elapsed(),
             best_action: self.tree.best_action(root_id, state),
-            scored_actions: self.tree.scored_actions(root_id, state),
+            child_stats: self.tree.child_stats(root_id, state),
         }
     }
 

@@ -1,3 +1,5 @@
+use crate::node::NodeStats;
+
 use super::{action_list::ActionList, edge::Edge, node::Node, state::State};
 
 pub struct Tree<T: State> {
@@ -118,7 +120,7 @@ where
         self.get_edge(*child_id).map(|e| e.action())
     }
 
-    pub fn scored_actions(&self, node_id: usize, state: &T) -> Vec<(f32, T::Action)> {
+    pub fn child_stats(&self, node_id: usize, state: &T) -> Vec<(NodeStats, T::Action)> {
         let mut results = vec![];
         let legal_actions = state.possible_actions();
 
@@ -126,7 +128,8 @@ where
             if let Some(edge) = self.get_edge(child_id) {
                 let action = edge.action();
                 if legal_actions.has(&action) {
-                    results.push((self.nodes[child_id].avg_score(), action))
+                    let stats = self.nodes[child_id].stats();
+                    results.push((stats, action))
                 }
             }
         }

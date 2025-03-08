@@ -2,14 +2,14 @@ use super::{action_list::ActionList, edge::Edge, state::State};
 
 type ChildArray = Vec<usize>;
 
-pub struct Node<T: State> {
+pub(crate) struct Node<T: State> {
     edge: Option<Edge<T::Action, usize>>,
     parent_id: Option<usize>,
     child_ids: ChildArray,
     tried_actions: T::ActionList,
 
     num_sims: usize,
-    avails: usize,
+    num_avails: usize,
     score: f32,
 }
 
@@ -24,7 +24,7 @@ where
             tried_actions: T::ActionList::uninit(),
             child_ids: Default::default(),
             num_sims: 0,
-            avails: 1,
+            num_avails: 1,
             score: 0.,
         }
     }
@@ -49,7 +49,7 @@ where
     }
 
     pub const fn increase_availability(&mut self) {
-        self.avails += 1;
+        self.num_avails += 1;
     }
 
     pub fn update(&mut self, reward: f32) {
@@ -73,12 +73,27 @@ where
         self.num_sims
     }
 
-    pub fn avg_score(&self) -> f32 {
+    pub const fn avg_score(&self) -> f32 {
         self.score / self.num_sims as f32
     }
 
     pub fn uct_score(&self, c: f32) -> f32 {
         let n = self.num_sims as f32;
-        self.score / n + c * ((self.avails as f32).ln() / n).sqrt()
+        self.score / n + c * ((self.num_avails as f32).ln() / n).sqrt()
     }
+
+    pub const fn stats(&self) -> NodeStats {
+        NodeStats {
+            avg_score: self.avg_score(),
+            num_sims: self.num_sims,
+            num_avails: self.num_avails,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct NodeStats {
+    pub avg_score: f32,
+    pub num_sims: usize,
+    pub num_avails: usize,
 }
