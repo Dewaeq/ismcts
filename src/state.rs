@@ -1,12 +1,15 @@
+use crate::inference::Inference;
+
 use super::action_list::ActionList;
 
 pub trait State {
     type Action: Clone + PartialEq;
-    type ActionList: ActionList<Self::Action>;
+    type ActionList: ActionList<Self::Action> + Clone;
+    type Inference: Inference;
 
     fn turn(&self) -> usize;
 
-    fn randomize(&self, observer: usize) -> Self;
+    fn randomize(&self, observer: usize, inference: &Self::Inference) -> Self;
 
     fn possible_actions(&self) -> Self::ActionList;
 

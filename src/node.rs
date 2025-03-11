@@ -2,6 +2,7 @@ use super::{action_list::ActionList, edge::Edge, state::State};
 
 type ChildArray = Vec<usize>;
 
+#[derive(Clone)]
 pub(crate) struct Node<T: State> {
     edge: Option<Edge<T::Action, usize>>,
     parent_id: Option<usize>,
