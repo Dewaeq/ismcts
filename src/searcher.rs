@@ -11,6 +11,7 @@ pub struct SearchResult<T: State> {
     pub child_stats: Vec<(NodeStats, T::Action)>,
 }
 
+#[derive(Clone)]
 pub struct Searcher<T: State + Clone> {
     tree: Tree<T>,
 }
@@ -22,7 +23,7 @@ impl<T: State + Clone> Searcher<T> {
         }
     }
 
-    pub fn search(&mut self, state: &T, time: u128) -> SearchResult<T> {
+    pub fn search(&mut self, state: &T, inference: &T::Inference, time: u128) -> SearchResult<T> {
         self.tree.reset();
         let root_id = self.tree.add_node(None, None);
 
@@ -34,7 +35,7 @@ impl<T: State + Clone> Searcher<T> {
                 break;
             }
 
-            let mut state = state.randomize(state.turn());
+            let mut state = state.randomize(state.turn(), inference);
 
             let node_id = self.tree.select(root_id, &mut state);
             let node_id = self.tree.expand(node_id, &mut state);

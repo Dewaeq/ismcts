@@ -2,6 +2,7 @@ use crate::node::NodeStats;
 
 use super::{action_list::ActionList, edge::Edge, node::Node, state::State};
 
+#[derive(Clone)]
 pub struct Tree<T: State> {
     nodes: Vec<Node<T>>,
     index: usize,
