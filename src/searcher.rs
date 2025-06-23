@@ -4,7 +4,7 @@ use crate::node::NodeStats;
 
 use super::{state::State, tree::Tree};
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct SearchResult<T: State> {
     pub num_simulations: usize,
     pub duration: Duration,
