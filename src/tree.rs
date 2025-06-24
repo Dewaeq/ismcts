@@ -153,4 +153,8 @@ where
     pub fn get_edge(&self, node_id: usize) -> Option<Edge<T::Action, usize>> {
         self.nodes[node_id].edge()
     }
+
+    pub fn get_size(&self) -> usize {
+        self.nodes.capacity()
+    }
 }

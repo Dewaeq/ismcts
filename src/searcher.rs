@@ -10,6 +10,7 @@ pub struct SearchResult<T: State> {
     pub duration: Duration,
     pub best_action: Option<T::Action>,
     pub child_stats: Vec<(NodeStats, T::Action)>,
+    pub tree_size: usize,
 }
 
 #[derive(Clone)]
@@ -51,6 +52,7 @@ impl<T: State + Clone> Searcher<T> {
             duration: started.elapsed(),
             best_action: self.tree.best_action(root_id, state),
             child_stats: self.tree.child_stats(root_id, state),
+            tree_size: self.tree.get_size(),
         }
     }
 
